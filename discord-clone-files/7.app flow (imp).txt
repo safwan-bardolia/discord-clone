@@ -1,0 +1,169 @@
+1.Database design 
+
+	channels		(collection)
+		messages	(collection)
+		channelName	(property)
+
+	.here channels is a collection (to add diff channles) (remember each collection has multiple documents)
+
+	.& for each 'channels' collection document (means for each channel)
+	 it has 'channelName' property 
+	 & 'messages' collection (because each channel has it's own set of messages)
+
+
+	messages				(collection)
+		message
+		timestamp			(property)
+		user{				(property as an object)
+			displayName
+			email
+			photo
+			uid
+		}
+
+	.this messages collection info is required when we load all the msgs of appropriate channel
+________________________________________________________________________________________________________________________________________________________________
+
+2b.when user logged in then update the 'redux-store' (user) property by dispatching  login action
+
+  useEffect(()=>{
+    auth.onAuthStateChanged((authUser)=>{
+      if(authUser){
+        dispatch(login({ uid: authUser.uid, photo: authUser.photoURL, email: authUser.email, displayName: authUser.displayName }))
+      } else {
+        dispatch(logout())
+      }
+    })
+  },[dispatch])   // dispatch is dependency without this it will show a warning in terminal
+
+  .note: 
+	.we also save this user info when we send the message on appropriate channel
+	.means for each channel msg we store 'message, timestamp' & this 'user' info
+	.because it is req to identify which user has send which msg &
+	 it is also req when we render all the msgs & for each msg we display its userName & photo of user which has send the msg
+
+
+
+________________________________________________________________________________________________________________________________________________________________
+
+3.once we logged in, 
+	.we display user info in "sidebar__profile"
+
+	.and we fetched all the channel info(channelName & id) from database
+
+    const [channels, setChannels] = useState([]);       // we fetch this data from db
+
+    useEffect(()=>{
+        db.collection("channels")
+        .onSnapshot((snapshot)=>{
+            setChannels(snapshot.docs.map(doc=>{
+                return {id: doc.id, channel: doc.data()}
+            }))
+        })
+    },[])
+
+
+  .and display all channel 
+                <div className="sidebar__channelsList">
+                    {channels.map(channel=>(
+                        <SidebarChannel key={channel.id} id={channel.id} channelName={channel.channel.channelName}/>
+                    ))}
+                </div>
+	
+
+________________________________________________________________________________________________________________________________________________________________
+
+4. 
+	.initially no channel is selected (no any channel name is appeared in <channelHeader> & input functionality is disabled)
+
+	.but when user click any channel then we update the 'redux-store' (app) property by dispatching  'setChannelInfo' action, 
+	 so we get channelId & channelName
+
+function SidebarChannel({id, channelName}) {
+
+    const dispatch = useDispatch();
+
+    const handleSetChannelInfo = () => {
+        dispatch(setChannelInfo({
+            channelId: id,
+            channelName: channelName
+        }))
+    }
+
+    return (
+        <div className="sidebarChannel" onClick={handleSetChannelInfo}>
+            <h4>
+                <span className="sidebarChannel__hash">#</span>
+                {channelName}
+            </h4>
+        </div>
+    )
+}
+
+________________________________________________________________________________________________________________________________________________________________
+
+5.chat.js
+	
+	.after client click on channel
+
+	.we get all the following info from 'redux-store'
+	    const user = useSelector(selectUser);
+    	    const channelID = useSelector(selectChannelId);
+            const channelName = useSelector(selectChannelName);
+
+	.after client click on channel fetch all the "Message" of that particular channel from DB
+
+	const [messages, setMessages] = useState([]);
+
+        useEffect(()=>{
+            // if channelId is present otherwise error
+            if(channelID) {
+                db.collection('channels')   // go to channels collection
+                .doc(channelID)             // inside 'channel' collection go to current channelId Document
+                .collection('messages')     // inside that doc go to collection 'messages'
+                .orderBy('timestamp','desc')
+                .onSnapshot(snapshot=>{
+                    setMessages(snapshot.docs.map((doc)=>{
+                        return doc.data();
+                    }))
+                })
+            }
+        },[channelID])
+
+_______	
+
+	.and render each message
+
+            <div className="chat__messages">
+                {messages.map(msg=>(
+                    <Message 
+                        timestamp={msg.timestamp}
+                        message={msg.message}
+                        user={msg.user}
+                    />
+                ))}
+            </div>
+
+________________________________________________________________________________________________________________________________________________________________
+
+6.chat.js
+	
+	.save the msg into the DB with timestamp & userInfo
+
+    const sendMessage = (e) => {
+        e.preventDefault();
+        
+        db.collection('channels')
+        .doc(channelID)
+        .collection('messages')
+        .add({
+            timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+            message: input,
+            user: user,         // to get particular user photo & display name on corresponding message
+        })
+
+        // clear the input
+        setInput('');
+    }
+
+

@@ -1,0 +1,61 @@
+<App>
+	{/*left part*/}
+	<sidebar>
+		
+		<div className="sidebar__top">
+			<h3>clever Programmer</h3>
+			ExpandMore Icon
+		</div>
+
+		<div className="sidebar__channels">
+	
+			<div className="sidebar__channelsHeader">
+				left-part	<ExpandMore/> & <h4>Text Channels</h4>
+				right-part	Add Icon
+			</div>				
+
+			<div className="sidebar__channelsList">
+				<SidebarChannel/>
+				<SidebarChannel/>
+				....
+			</div>
+		</div>				
+
+		<div className="sidebar__voice">
+			left-part	Icon
+			middle-part	<h3> & <p>
+			right-part	2Icons
+		</div>
+
+		<div className="sidebar__profile">
+			left-part	Avatar
+			middle-part	<h3> & <p>
+			right-part	3Icons
+		</div>
+				
+	</sidebar>
+
+
+	{/*right part*/}	
+	<chat>
+		
+		<ChatHeader/>
+			left-part	channelName
+			right-part	3Icons then Input & 2Icons
+		<ChatHeader/>
+
+                <div className="chat__messages">
+	   	    <Message/>
+		    <Message/>
+		    ......
+                </div>
+
+		<div className="chat__input">
+			left-part	<AddCircle/>
+			middle-part	input
+			right-part	3Icons		    		
+		</div>
+
+	</chat>
+
+</App>

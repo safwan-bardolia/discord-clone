@@ -1,0 +1,103 @@
+const [input, setInput] = useState('');
+
+    return (
+        <div className="chat">
+            <ChatHeader channelName={channelName}/>
+
+            <div className="chat__messages"/>
+
+            <div className="chat__input">
+                <AddCircle fontSize="large"/>
+                <form>
+                    {/* by default input type is text */}
+                    <input 
+                        // if channel is not selected then disable input functionality
+                        disabled={!channelID}
+                        placeholder={`Message #${channelName? channelName:'please select channle'}`}
+                        value={input}
+                        onChange={(e)=>setInput(e.target.value)}
+                    />
+                    <button className="chat__inputButton" type="submit">Send message</button>
+                </form>
+
+                <div className="chat__inputIcons"/>
+            </div>
+        </div>
+    )
+
+__________________________________________________________________________________________
+
+step:2
+	for messages functionality
+
+    const [messages, setMessages] = useState([]);
+
+    useEffect(()=>{
+        // if channelId is present otherwise error
+        if(channelID) {
+            db.collection('channels')   // go to channels collection
+            .doc(channelID)             // inside 'channel' collection go to current channelId Document
+            .collection('messages')     // inside that doc go to collection 'messages'
+            .orderBy('timestamp','desc')
+            .onSnapshot(snapshot=>{
+                setMessages(snapshot.docs.map((doc)=>{
+                    return doc.data();
+                }))
+            })
+        }
+    },[channelID])
+
+// when user submit form for msg
+<button onClick={sendMessage} className="chat__inputButton" type="submit">Send message</button>
+
+    const sendMessage = (e) => {
+        e.preventDefault();
+        
+        db.collection('channels')
+        .doc(channelID)
+        .collection('messages')
+        .add({
+            timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+            message: input,
+            user: user,         // to get particular user photo & display name on corresponding message
+        })
+
+        // clear the input
+        setInput('');
+    }
+
+___________
+
+            <div className="chat__messages">
+                {messages.map(msg=>(
+                    <Message 
+                        timestamp={msg.timestamp}
+                        message={msg.message}
+                        user={msg.user}
+                    />
+                ))}
+            </div>
+
+____________________________________________________________________________________________________
+
+update <Message>
+
+function Message({timestamp, message, user}) {
+    return (
+        <div className="message">
+
+            <Avatar src={user.photo}/>
+            
+            <div className="message__info">
+                <h4>
+                    {user.displayName}
+                    <span className="message__timestamp">
+                        {new Date(timestamp?.toDate()).toUTCString()}
+                    </span>
+                </h4>
+                <p>{message}</p>
+            </div>
+
+        </div>
+    )
+}

@@ -1,0 +1,112 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+
+  /* take 25% width of entire flexbox(because we have use flexbox in App.css) */
+  flex: 0.25;
+
+  height: 100vh;
+  background-color: #2f3135;
+}
+
+.sidebar__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  color: white;
+  border-bottom: 3px solid #26282c;
+}
+
+.sidebar__channels {
+  /* take as much as height possible (because i want middle part to take more space) */
+  flex: 1;
+  overflow: scroll;
+}
+
+/* hide scrollbar for chrome, safari & opera */
+.sidebar__channels::-webkit-scrollbar {
+  display: none;
+}
+
+/* hide scrollbar for IE, Firefox  */
+.sidebar__channels {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.sidebar__channelsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  color: gray;
+}
+
+.sidebar__header {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar__addChannel {
+  cursor: pointer;
+}
+
+.sidebar__addChannel:hover {
+  color: white;
+}
+
+.sidebar__voice,
+.sidebar__profile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: grey;
+  padding: 10px;
+  border-top: 1px solid grey;
+}
+
+.sidebar__voiceInfo {
+  /* take as much as width possible */
+  flex: 1;
+  padding: 10px;
+}
+
+.sidebar__voiceIcon {
+  color: #4fb185;
+}
+
+.sidebar__voiceInfo > h3 {
+  color: #4fb185;
+}
+
+.sidebar__voiceInfo > p {
+  font-size: smaller;
+}
+
+.sidebar__voiceIcons > .MuiSvgIcon-root {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sidebar__voiceIcons > .MuiSvgIcon-root:hover {
+  color: white;
+}
+
+.sidebar__profileInfo {
+  flex: 1;
+  padding: 10px;
+}
+
+.sidebar__profileIcons > .MuiSvgIcon-root {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sidebar__profileIcons > .MuiSvgIcon-root:hover {
+  color: white;
+}
+
+.sidebar__profileInfo > h3 {
+  color: white;
+}

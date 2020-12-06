@@ -1,0 +1,4 @@
+1.when we logged in to the app
+2.when we logged out
+
+3.when user click on any channel

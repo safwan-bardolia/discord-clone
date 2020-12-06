@@ -1,0 +1,116 @@
+***Channel Functionality***
+
+import {createSlice} from '@reduxjs/toolkit';
+
+export const appSlice = createSlice({
+    name: 'app',
+    initialState: {
+        channelId: null,
+        channelName: null,
+    },
+    reducers: {
+        setChannelInfo : (state, action) => {
+            state.channelId = action.payload.channelId;
+            state.channelName = action.payload.channelName
+        },
+    },
+});
+
+export const {setChannelInfo} = appSlice.actions;
+export const selectChannelId = (state) => state.app.channelId;
+export const selectChannelName = (state) => state.app.channelName;
+export default appSlice.reducer;
+
+________________________________________________________________________________________________________________________________________________
+
+step:2
+	now go to sidebar.js
+
+// add following state (we fetch this data from DB)
+const [channels, setChannels] = useState([]);
+
+// add following code					(get the data from DB)
+    useEffect(()=>{
+        // onSnapshot : means anything update, delete or changes in collection it gives you updated DB this code re-run
+        db.collection('channels')
+        .onSnapshot((snapshot)=>{
+            // once we get snapshot update the state
+            // snapshot.docs gives you array of docs, so map through each doc & return the new array to the setChannels
+            setChannels(snapshot.docs.map(doc=>{
+                return {id: doc.id, channel: doc.data()}
+            }))
+        })
+    },[])
+
+
+
+// update sidebar__channelsList div to load dynamically <SidebarChannel/>
+
+                <div className="sidebar__channelsList">
+                    {channels.map(channel=>(
+                        <SidebarChannel/>
+                    ))}
+                </div>
+
+
+
+// update <Add className="sidebar__addChannel"/>	(adding channel to the DB)
+
+	<Add onClick={handleAddChannel} className="sidebar__addChannel"/>
+
+    const handleAddChannel = () => {
+        const channelName = prompt("Enter a new channel name");
+        // if user enter channel name, to protect against undefined
+        if(channelName) {
+            db.collection('channels').add({
+                channelName: channelName
+            })
+        }
+    }
+
+
+________________________________________________________________________________________________________________________________________________
+
+step:3
+	now when we click on any channel update redux-store (appSlice)
+
+
+function SidebarChannel({id, channelName}) {
+
+    const dispatch = useDispatch();
+
+    const handleSetChannelInfo = () => {
+        dispatch(setChannelInfo({
+            channelId: id,
+            channelName: channelName
+        }))
+    }
+
+    return (
+        <div className="sidebarChannel" onClick={handleSetChannelInfo}>
+            <h4>
+                <span className="sidebarChannel__hash">#</span>
+                {channelName}
+            </h4>
+        </div>
+    )
+}
+
+________________________________________________________________________________________________________________________________________________
+
+step:4
+	now goto <Chat/> to render channel name from the redux-store (because when we click on channel name then we update the redux-store)
+
+function Chat() {
+
+    const user = useSelector(selectUser);
+    const channelID = useSelector(selectChannelId);
+    const channelName = useSelector(selectChannelName);
+
+    return (
+    )
+}
+
+.now pass the above data as props to its appropriate component
+
+	<ChatHeader channelName={channelName}/>	

@@ -1,0 +1,19 @@
+.sidebarChannel > h4 {
+  /* display:flex may be no need  */
+  display: flex;
+  padding-left: 15px;
+  align-items: center;
+  color: grey;
+  cursor: pointer;
+}
+
+/* when we hover over sidebarChannel then target its h4 tag */
+.sidebarChannel:hover > h4 {
+  color: white;
+  background-color: #40464b;
+}
+
+.sidebarChannel__hash {
+  font-size: 30px;
+  padding: 8px;
+}

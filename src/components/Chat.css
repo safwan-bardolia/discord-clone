@@ -1,0 +1,66 @@
+.chat {
+  display: flex;
+  flex-direction: column;
+  flex: 0.75;
+  background-color: #363a3f;
+  height: 100vh;
+}
+
+.chat__input {
+  color: lightgray;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #474b53;
+  border-radius: 5px;
+  margin: 20px;
+  border-top: 1px solid gray;
+}
+
+.chat__inputButton {
+  display: none;
+}
+
+.chat__input > form > input {
+  background: transparent;
+  border: none;
+  outline-width: 0;
+  padding: 15px;
+  color: white;
+  font-size: large;
+  width: 95%;
+}
+
+.chat__input > form {
+  /* take majority of width */
+  flex: 1;
+}
+
+.chat__inputIcons > .MuiSvgIcon-root {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.chat__inputIcons > .MuiSvgIcon-root:hover {
+  color: white;
+}
+
+.chat__messages {
+  /* take as much as room possible */
+  flex: 1;
+
+  /* when there are multiple msgs then this is helpful, see the problem without this property */
+  overflow: scroll;
+}
+
+/* hide scrollbar for chrome, safari & opera */
+.chat__messages::-webkit-scrollbar {
+  display: none;
+}
+
+/* hide scrollbar for IE, Firefox  */
+.chat__messages {
+  -ms-overflow-style: none;
+  scrollbar-width: none; /*firefox*/
+}
